@@ -44,7 +44,7 @@ def login_():
         cursor.close()
         return jsonify({
             "status": 0,
-            "message": "用户名或密码错误！".format(username)
+            "message": "用户名或密码错误！"
         })
 
 
