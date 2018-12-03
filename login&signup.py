@@ -51,7 +51,7 @@ def login_():
 
 @app.route('/signup', methods=['GET'])
 def signup():
-    return render_template('login.html')
+    return render_template('signup.html')
 
 
 #用户注册
@@ -94,4 +94,4 @@ def signup_():
         })
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=5000, host='0.0.0.0')
