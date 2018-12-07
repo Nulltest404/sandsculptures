@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>下载</title>
+</head>
+{% for photo in photo_names %}
+<form action="/get_photo/{{username}}/{{dir_name}}/{{photo}}" method="post">
+	<h3>获取图片</h3>
+	<input type="submit" value="获取">
+</form>
+</br>
+{% endfor %}
+</body>
+</html>
