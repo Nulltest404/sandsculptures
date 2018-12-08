@@ -1,6 +1,6 @@
 ﻿# coding=utf-8
 from flask import Flask, request, render_template, redirect, jsonify, json, make_response, session, url_for, \
-    send_from_directory
+    send_from_directory, abort
 from flask_cors import CORS
 import os, time, sched
 from datetime import timedelta, datetime
@@ -210,14 +210,22 @@ def consign():
             cursor.close()
 
 
-# 委托详情
+# 委托详情（未做完）
 @app.route('/consign/<consign_id>', methods=["GET"])
+@login_require
 def consign_page(consign_id):
-    pass
+    cursor = db.cursor()
+    sql = "select * from consigns where consign_id='%s'" % (consign_id)
+    result = cursor.execute(sql)
+    if result:
+        pass
+    else:
+        abort(404)
 
 
 # 委托删除
 @app.route('/consign/delete', methods=["POST"])
+@login_require
 def consign_page():
     cursor = db.cursor()
     consign_id = request.form.get('consign_id')
@@ -249,6 +257,7 @@ def consign_page():
 
 # 委托状态变更（是否已完成）
 @app.route('/consign/finish', methods=["POST"])
+@login_require
 def finish_change():
     cursor = db.cursor()
     consign_id = request.form.get('consign_id')
@@ -259,7 +268,7 @@ def finish_change():
     result = cursor.execute(sql)
     if result:
         sql = "update consigns set finished = '%s' where consign_id='%s' and username='%s'" \
-              % (finish,consign_id, username)
+              % (finish, consign_id, username)
         try:
             cursor.execute(sql)
             db.commit()
