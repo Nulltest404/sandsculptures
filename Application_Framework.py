@@ -226,7 +226,7 @@ def consign_page(consign_id):
 # 委托删除
 @app.route('/consign/delete', methods=["POST"])
 @login_require
-def consign_page():
+def consign_delete():
     cursor = db.cursor()
     consign_id = request.form.get('consign_id')
     username = session.get('username')
