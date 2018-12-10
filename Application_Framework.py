@@ -27,10 +27,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # 查找consign_id
 def get_consign_id(user_id, time):
     Cursor = db.cursor()
-    sql = "select consign_id from consigns where user_id='%s' and time='%s'" % (user_id, time)
+    sql = "select consign_id from consigns where user_id='%s' and `time`='%s'" % (user_id, time)
     result = Cursor.execute(sql)
     if result:
-        consign_id = Cursor.fetchall()[0]
+        consign_id = Cursor.fetchall()[0][0]
         Cursor.close()
         return consign_id
     else:
@@ -53,7 +53,7 @@ def index():
     if session.get('user_id'):
         return u'欢迎你：{}'.format(session.get('username'))
     else:
-        return u'你没有登录'
+        return render_template('homepage.html')
 
 
 # 用户登录
@@ -80,23 +80,18 @@ def login():
                 "message": "提交信息有误！"
             })
         # 登录
-        sql = "select user_id from users where username='%s' and password='%s'" % \
+        sql = "select user_id from users where username='%s' and `password`='%s'" % \
               (username, password)
         result = cursor.execute(sql)
         if result:
-            user_id = cursor.fetchall()[0]
+            user_id = cursor.fetchall()[0][0]
+            # 储存user_id,用户名进入session
             session["user_id"] = user_id
             session["username"] = username
-            # 储存用户名和密码进入session
-            # session["username"] = username
-            # session["password"] = password
             cursor.close()
             if check:
                 session.permanent = True
-            return jsonify({
-                "status": 21,
-                "message": "用户{}登录成功！".format(username)
-            }), 200
+            return redirect(url_for('index'))
         else:
             cursor.close()
             return jsonify({
@@ -144,15 +139,12 @@ def signup():
                 "message": "用户已存在！"
             })
         # 创建用户
-        sql = """INSERT INTO users(username,password)
+        sql = """INSERT INTO users(username,`password`)
                      VALUES ('%s', '%s')""" % (username, password)
         try:
             cursor.execute(sql)
             db.commit()
-            return jsonify({
-                "status": 11,
-                "message": "用户{}添加成功！".format(username)
-            }), 200
+            return redirect(url_for('index'))
         except:
             db.rollback()
             return jsonify({
@@ -175,7 +167,7 @@ def logout():
 @login_require
 def consign():
     if (request.method == 'GET'):
-        pass
+        return render_template('consign.html')
     else:
         cursor = db.cursor()
         # form
@@ -185,16 +177,16 @@ def consign():
         partition = request.form.get('partition')
         user_id = session.get('user_id')
         username = session.get('username')
-        time = datetime()
+        print(user_id)
         if not consign_name or not desc:
             cursor.close()
             return jsonify({
                 "status": "4error1",
                 "message": "提交信息有误！"
             })
-        sql = """INSERT INTO consigns(user_id,username,consign_name,desc,time,contact,partition)
-                             VALUES ('%s', '%s', '%s', '%s', '%s','%s','%s')""" \
-              % (user_id, username, consign_name, desc, time, contact, partition)
+        sql = """INSERT INTO consigns(user_id,username,consign_name,`desc`,`time`,contact,`partition`)
+                             VALUES ('%s', '%s','%s','%s', NOW(),'%s','%s');""" \
+              % (user_id, username, consign_name, desc, contact, partition)
         try:
             cursor.execute(sql)
             db.commit()
@@ -314,16 +306,35 @@ def history_index():
 @login_require
 def history(user_id):
     cursor = db.cursor()
-    sql = "select comsign_name,desc,time from consigns where user_id='%s'" \
+    sql = "select comsign_name,`desc`,`time` from consigns where user_id='%s'" \
           % (user_id)
     cursor.execute(sql)
     comsigns = cursor.fetchall()
-    sql = "select comsign_name,desc,time from comments where user_id='%s'" \
-          % (user_id)
-    cursor.execute(sql)
-    comments = cursor.fetchall()
+    cursor.close()
     # 返回一个网页
     return ''
+
+
+# 搜索功能
+@app.route('/search/<search_str>', methods=["GET"])
+# @login_require
+def search(search_str):
+    cursor = db.cursor()
+    search_str = str(search_str)
+    search_list = search_str.split()
+    outer = []
+    for char in search_list:
+        sql = "select * from tr where `name` like '%{}%'".format(char)
+        # sql = "select * from consigns where `consign_name` like '%{}%'".format(char)
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        for result in results:
+            if result[0] not in outer:
+                outer += result
+    cursor.close()
+    # print(outer)
+    # outer即是搜索结果
+    return ""
 
 
 if (__name__ == '__main__'):

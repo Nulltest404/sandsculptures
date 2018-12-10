@@ -99,3 +99,21 @@ def comment(consign_id):
             "status": "6error2",
             "message": "添加错误！"
         })
+
+    # 历史接单
+    @app.route('/history/<user_id>', methods=["GET"])
+    @login_require
+    def history(user_id):
+        cursor = db.cursor()
+        sql = "select comsign_name,`desc`,`time` from consigns where user_id='%s'" \
+              % (user_id)
+        cursor.execute(sql)
+        comsigns = cursor.fetchall()
+
+        # 评论不用做了
+        # sql = "select comsign_name,`desc`,`time` from comments where user_id='%s'" \
+        #       % (user_id)
+        # cursor.execute(sql)
+        # comments = cursor.fetchall()
+        # 返回一个网页
+        return ''
