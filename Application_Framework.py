@@ -280,32 +280,45 @@ def finish_change():
         })
 
 
-# 个人中心跳转
+# 个人中心(未完成）
 @app.route('/home', methods=["GET"])
 @login_require
-def home_index():
-    return redirect(url_for('home', user_id=session.get('user_id')))
-
-
-# 个人中心
-@app.route('/home/<user_id>', methods=["GET"])
-@login_require
-def home(user_id):
+def home():
+    cursor = db.cursor()
+    username = session.get('username')
+    user_id = session.get('user_id')
+    # 发布的委托
+    sql = "select * from consigns where username='%s'" \
+          % (username)
+    cursor.execute(sql)
+    consigns = cursor.fetchall()
+    Consigns = {}
+    for consign in consigns:
+        cache = {}
+        cache['consign_name'] = consign[3]
+        cache['desc'] = consign[4]
+        cache['time'] = consign[5]
+        cache['contact'] = consign[6]
+        cache['partition'] = consign[7]
+        cache['finished'] = consign[8]
+        Consigns += cache
+    # 收藏
+    sql = "select * from collects where username='%s'" \
+          % (username)
+    cursor.execute(sql)
+    collects = cursor.fetchall()
+    Collects = {}
+    for collect in collects:
+        pass
     return u"{}'s home".format(user_id)
 
 
-# 历史接单跳转
-@app.route('/history/', methods=["GET"])
+# 收藏（未完成）
+@app.route('/collect', methods=["GET"])
 @login_require
-def history_index():
-    return redirect(url_for('history', user_id=session.get('user_id')))
-
-
-# 历史接单
-@app.route('/history/<user_id>', methods=["GET"])
-@login_require
-def history(user_id):
+def collect():
     cursor = db.cursor()
+    user_id = session.get("user_id")
     sql = "select comsign_name,`desc`,`time` from consigns where user_id='%s'" \
           % (user_id)
     cursor.execute(sql)
@@ -317,7 +330,7 @@ def history(user_id):
 
 # 搜索功能
 @app.route('/search/<search_str>', methods=["GET"])
-# @login_require
+@login_require
 def search(search_str):
     cursor = db.cursor()
     search_str = str(search_str)
