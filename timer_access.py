@@ -1,0 +1,23 @@
+# coding=utf-8
+import requests
+from datetime import datetime
+import time
+
+
+def timing():
+    now = datetime.now()
+    hours = [0, 4, 8, 12, 16, 20, 24]
+    if now.hour in hours:
+        try:
+            r = requests.get('127.0.0.1:80/R9CXjrcx9vNvG8NepiyY13et')
+        except:
+            pass
+        try:
+            r = requests.get('127.0.0.1:5000/R9CXjrcx9vNvG8NepiyY13et')
+        except:
+            pass
+    time.sleep(60 * 60)
+
+
+if __name__ == '__main__':
+    timing()

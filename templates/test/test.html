@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>抽屉菜单实例</title>
+
+    <link href = "css/nav_sytle.css" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: green;
+        }
+        .con{
+            position: absolute;
+            z-index: 0;
+            top: 50%;
+            margin-top: -51px;
+            left: 50%;
+            margin-left: -202px;
+        }
+        button{
+            width:100px;
+            height: 100px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            float: left;
+        }
+        button:hover{
+            background-color: #f5f5f5;
+        }
+
+        span{
+            display: inline-block;
+            width: 96%;
+            height: 50px;
+            margin-left: 2%;
+            line-height: 50px;
+            border-bottom: 1px solid #f5f5f5;
+            text-align: center;
+        }
+        span:hover{
+            background-color: #f5f5f5;
+        }
+
+        .bgDiv{
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            opacity: .5;
+            position:fixed;
+            display: none;
+            z-index: 99;
+            bottom: 0;
+        }
+        .leftNav{
+            width: 50%;
+            max-width: 400px;
+            height: 100%;
+            background-color: #fff;
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            left: -50%;
+        }
+        .rightNav{
+            width: 50%;
+            max-width: 400px;
+            height: 100%;
+            background-color: #fff;
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            right: -50%;
+        }
+        .upNav{
+            width: 100%;
+            height: 40%;
+            background-color: #fff;
+            position: fixed;
+            z-index: 999;
+            top: -40%;
+        }
+        .downNav{
+            width: 100%;
+            height: 40%;
+            background-color: #fff;
+            position: fixed;
+            z-index: 999;
+            bottom: -40%;
+        }
+    </style>
+    <script src="http://libs.baidu.com/html5shiv/3.7/html5shiv.min.js"></script>
+    <!--<script src="js/jquery-2.1.1.min.js"></script>-->
+    <script src="js/nav.js"></script>
+
+</head>
+<body>
+<div class="con">
+    <button class="left">左抽屉菜单</button>
+    <button class="right">右抽屉菜单</button>
+    <button class="down">下抽屉菜单</button>
+    <button class="up">上抽屉菜单</button>
+</div>
+
+
+<div class="bgDiv"></div>
+<div class="leftNav">
+    <span>菜单1</span>
+    <span>菜单2</span>
+    <span>菜单3</span>
+    <span>菜单4</span>
+</div>
+<div class="rightNav">
+    <span>菜单1</span>
+    <span>菜单2</span>
+    <span>菜单3</span>
+    <span>菜单4</span>
+</div>
+<div class="downNav">
+    <span>菜单1</span>
+    <span>菜单2</span>
+    <span>菜单3</span>
+    <span>菜单4</span>
+</div>
+<div class="upNav">
+    <span>菜单1</span>
+    <span>菜单2</span>
+    <span>菜单3</span>
+    <span>菜单4</span>
+</div>
+</body>
+</html>
