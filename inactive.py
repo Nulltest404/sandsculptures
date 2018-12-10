@@ -116,4 +116,4 @@ def comment(consign_id):
         # cursor.execute(sql)
         # comments = cursor.fetchall()
         # 返回一个网页
-        return ''
+        return '' 
