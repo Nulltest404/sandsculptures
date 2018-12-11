@@ -210,7 +210,15 @@ def consign_page(consign_id):
     sql = "select * from consigns where consign_id='%s'" % (consign_id)
     result = cursor.execute(sql)
     if result:
-        pass
+        consign = {}
+        consign["username"] = result[0][2]
+        consign["consign_name"] = result[0][3]
+        consign["desc"] = result[0][4]
+        consign["time"] = result[0][5]
+        consign["contact"] = result[0][6]
+        consign["partition"] = result[0][7]
+        consign["finished"] = result[0][8]
+        return ""
     else:
         abort(404)
 
@@ -310,6 +318,7 @@ def home():
     Collects = {}
     for collect in collects:
         pass
+    cursor.close()
     return u"{}'s home".format(user_id)
 
 
@@ -322,30 +331,66 @@ def collect():
     sql = "select comsign_name,`desc`,`time` from consigns where user_id='%s'" \
           % (user_id)
     cursor.execute(sql)
-    comsigns = cursor.fetchall()
+    collects = cursor.fetchall()
     cursor.close()
     # 返回一个网页
     return ''
 
 
-# 搜索功能
-@app.route('/search/<search_str>', methods=["GET"])
+# 收藏删除
+@app.route('/collect/delete', methods=["POST"])
 @login_require
-def search(search_str):
+def collect_delete():
     cursor = db.cursor()
-    search_str = str(search_str)
-    search_list = search_str.split()
-    outer = []
-    for char in search_list:
-        sql = "select * from tr where `name` like '%{}%'".format(char)
-        # sql = "select * from consigns where `consign_name` like '%{}%'".format(char)
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        for result in results:
-            if result[0] not in outer:
-                outer += result
+    consign_id = request.form.get('consign_id')
+    user_id = session.get('user_id')
+    sql = "select * from collects where user_id='%s' and consign_id='%s'" \
+          % (user_id, consign_id)
+    result = cursor.execute(sql)
+    if result:
+        sql = "delete from collects where user_id='%s' and consign_id='%s'" \
+              % (user_id, consign_id)
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            return jsonify({
+                "status": "6error2",
+                "message": "删除错误！"
+            })
+        finally:
+            cursor.close()
+    else:
+        cursor.close()
+        return jsonify({
+            "status": "6error1",
+            "message": "收藏不存在！"
+        })
+
+
+# 搜索功能
+@app.route('/search/<search_str>', methods=["GET", "POST"])
+# @login_require
+def search(search_str):
+    if (request.method == 'GET'):
+        return render_template('search.html')
+    else:
+        cursor = db.cursor()
+        search_str = str(search_str)
+        search_list = search_str.split()
+        outer = []
+        for char in search_list:
+            # sql = "select * from tr where `name` like '%{}%'".format(char)
+            sql = "select * from consigns where `consign_name` like '%{}%'".format(char)
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if outer:
+                outer = [val for val in outer if val in results]
+            else:
+                outer += results[:]
     cursor.close()
-    # print(outer)
+    print(outer)
     # outer即是搜索结果
     return ""
 
