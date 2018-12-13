@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+
+    <link rel='stylesheet' href='../static/css/style.css'>
+    <link rel='stylesheet' href='../static/css/swiper.min.css'>
+
+    <script src="../static/js/jquery.1.11.1.js"></script>
+    <script src="../static/js/swiper.min.js"></script>
+    <script src="../static/js/idangerous.swiper.min.js"></script>
+
+    <title>发布历史</title>
+</head>
+<body>
+<div class="bg">
+  <!--<div class="right">-->
+    <!--<img src="static/imgs/右边.svg" style="display:inline-block;width: .525rem; height: .425rem; margin-top: .85rem"/>-->
+  <!--</div>-->
+  <!--<div>发布历史</div>-->
+  <div class = "rectangle">
+    <div class="right">
+      <img src = "../static/imgs/右边.svg">
+    </div>
+    <div class="send">发布历史</div>
+  </div>
+    <div class="favor-header-bar">
+        <div class="tabs">
+            <li class="default">
+              <a href="javascript:void(0);" id="btn1" hidefocus="true" style="text-decoration: none">未接收</a>
+            </li>
+          <li>
+              <a href="javascript:void(0);" id="btn2" hidefocus="true" style="text-decoration: none">已接收</a>
+            </li>
+        </div>
+    </div>
+</div>
+   <div class="swiper-container favor-list">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <h2>未接收</h2>
+            </div>
+            <div class="swiper-slide margin19">
+                <h2>已接收</h2>
+            </div>
+   <script>
+    var mySwiper = new Swiper('.swiper-container',{
+        autoHeight: true,
+        onSlideChangeStart: function(){
+          $(".tabs .default").removeClass('default');
+          $(".tabs li").eq(mySwiper.activeIndex).addClass('default');
+        }
+    });
+     $(".tabs li").on('click',function(e){
+        e.preventDefault();
+        $(".tabs .default").removeClass('default');
+        $(this).addClass('default');
+        mySwiper.swipeTo($(this).index());
+      });
+      $(".tabs li").click(function(e){
+        e.preventDefault();
+      });
+
+    </script>
+</body>
+</html>
+
