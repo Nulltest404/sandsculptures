@@ -29,7 +29,7 @@ def get_consign_id(user_id):
         return consign_id
     else:
         Cursor.close()
-        print("consign_id查；找失败")
+        print("consign_id查找失败")
         return -1
 
 
