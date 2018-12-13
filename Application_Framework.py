@@ -190,29 +190,6 @@ def consign():
             cursor.close()
 
 
-# 委托详情（未做完）
-@app.route('/consign/<consign_id>', methods=["GET"])
-@login_require
-def consign_page(consign_id):
-    cursor = db.cursor()
-    sql = "select * from consigns where consign_id='%s'" % (consign_id)
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    if result:
-        consign = {}
-        consign["username"] = result[0][2]
-        consign["consign_name"] = result[0][3]
-        consign["desc"] = result[0][4]
-        consign["time"] = result[0][5]
-        consign["contact"] = result[0][6]
-        consign["partition"] = result[0][7]
-        consign["finished"] = result[0][8]
-        return ""
-    else:
-        abort(404)
-    cursor.close()
-
-
 # 委托删除
 @app.route('/consign/delete', methods=["POST"])
 @login_require
@@ -278,40 +255,6 @@ def finish_change():
         })
 
 
-# 个人中心(未完成）
-@app.route('/home', methods=["GET"])
-@login_require
-def home():
-    cursor = db.cursor()
-    username = session.get('username')
-    user_id = session.get('user_id')
-    # 发布的委托
-    sql = "select * from consigns where username='%s'" \
-          % (username)
-    cursor.execute(sql)
-    consigns = cursor.fetchall()
-    Consigns = {}
-    for consign in consigns:
-        cache = {}
-        cache['consign_name'] = consign[3]
-        cache['desc'] = consign[4]
-        cache['time'] = consign[5]
-        cache['contact'] = consign[6]
-        cache['partition'] = consign[7]
-        cache['finished'] = consign[8]
-        Consigns += cache
-    # 收藏
-    sql = "select * from collects where username='%s'" \
-          % (username)
-    cursor.execute(sql)
-    collects = cursor.fetchall()
-    Collects = {}
-    for collect in collects:
-        pass
-    cursor.close()
-    return u"{}'s home".format(user_id)
-
-
 # 收藏
 @app.route('/collect', methods=["GET"])
 @login_require
@@ -355,7 +298,7 @@ def collect_delete():
 @app.route('/search/<search_str>', methods=["GET"])
 @login_require
 def search(search_str):
-    return render_template('search.html',search_str=search_str)
+    return render_template('search.html', search_str=search_str)
 
 
 # 搜索功能
